@@ -1,0 +1,13 @@
+rosrun image_view image_view image:=/camera/rgb/image_color
+rosrun image_view image_view image:=/camera/depth/image
+roslaunch freenect_launch freenect.launch  depth_registration:=true
+rostopic echo /camera/depth_registered/image_raw
+rostopic info /camera/depth/image
+rostopic list -p
+rosmsg show /sensor_msgs/Image
+rostopic pub /camera/depth_registered/image_raw
+
+
+
+
+
