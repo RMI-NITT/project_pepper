@@ -15,10 +15,10 @@ void loop() {
   Serial.print(y);
   Serial.print("\n");
   int ra = random(1, 41);
-  if(x<5) {
+  if(x<100) {
     x = x + 1;
   }
-  if(y<8) {
+  if(y<100) {
     y = y + 2;
   }
 
@@ -27,9 +27,10 @@ void loop() {
     Serial.print(" ");
     Serial.print(y-1);
     Serial.print(" ");
-    Serial.print("Person");
+    if(x>50) Serial.print("Person");
+    else Serial.print("Toothbrush");
     Serial.print("\n");
   }
   
-  _delay_ms(500);
+  _delay_ms(1500);
 }
