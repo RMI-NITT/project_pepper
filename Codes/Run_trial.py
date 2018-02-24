@@ -84,48 +84,32 @@ def Rhino_read1(r):
     else:
         return 0
 
-time.sleep(5)
-print "Ready"
-input_data = 'Y'
-input_data1 = 'Y' 
-Rhino_send1(input_data1)
-Rhino_send(input_data)
-input_data = 'm150'
-input_data1 = 'm150' 
-Rhino_send1(input_data1)
-Rhino_send(input_data)
-while True:
-#    w = raw_input("r/w:")
-#    k = raw_input("Port:")
-#    input_data = raw_input("Enter:")
-    m = raw_input("Hi:")
-    if(m=='f'):
-       input_data = 's-150'
-       input_data1 = 's150'
-    elif(m=='m'):
-       input_data = 'p0'
-       input_data1 = 'p0'
-    elif(m=='s'):
-       input_data = 's0'
-       input_data1 = 's0'
-    elif(m=='l'):
-       input_data = 's150'
-       input_data1 = 's150'
-    elif(m=='r'):
-       input_data = 's-150'
-       input_data1 = 's-150'
-    elif(m=='b'):
-       input_data = 's150'
-       input_data1 = 's-150'
-    p1 = Process(target = Rhino_send1(input_data1))
-    
-    p2 = Process(target = Rhino_send(input_data))
-    p2.start()
-    p1.start()
-
-#    subprocess_cmd('echo a; echo b')
-#    Rhino_send1(input_data1)
-#    Rhino_send(input_data)
-    
-#cable WHITE to Orange
-#cable green to yellow
+if __name__ == "__main__":
+	Rhino_send('Y')
+	Rhino_send1('Y')
+	time.sleep(2)
+	print "Done tuning"
+	Rhino_send('p0')
+	Rhino_send1('p0')
+	in0 = "s-"
+	in1 = "s"
+	in0_data = 150
+	in1_data = 150 
+	out0 = 0
+	out1 = 0		
+	for i in range(10):
+		Rhino_send(in0+str(in0_data))
+		Rhino_send1(in1+str(in1_data))				
+		#out0_prev = out0
+		#out1_prev = out1
+		#out0 = Rhino_read('p')
+		#out1 = Rhino_read1('p')
+		#print "0", out0_prev - out0
+		#print "1", out1_prev - out1
+		'''
+		print Rhino_read('A'), Rhino_read('B'), Rhino_read('C')
+		print Rhino_read1('A'), Rhino_read1('B'), Rhino_read1('C')
+		'''
+	Rhino_send('s0')
+	Rhino_send1('s0')
+	

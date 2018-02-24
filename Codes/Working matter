@@ -6,6 +6,8 @@ rostopic info /camera/depth/image
 rostopic list -p
 rosmsg show /sensor_msgs/Image
 rostopic pub /camera/depth_registered/image_raw
+java -jar AioRemoteDesktop3.5.0.jar 
+
 
 
 
