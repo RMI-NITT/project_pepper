@@ -1,0 +1,32 @@
+Windows:
+
+- Run AioRemoteDesktop3.5.0.exe
+- Or run AioRemoteDesktop3.5.0.jar
+- Or run AioRemoteDesktop3.5.0.bat
+
+
+Linux:
+- Run AioRemoteDesktop3.5.0.jar
+- Or run AioRemoteDesktop3.5.0.sh
+
+Mac:
+- Run AioRemoteDesktop3.5.0.jar
+
+
+For any issue:
+- check http://blog.aioremote.net/2013/10/aio-remote-common-connection-issues.html
+- support@aioremote.net
+- @aioremote on twitter
+
+
+
+Note: bluetooth address may be incorrect on Mac.. it is better to pair your phone with your PC then search for your PC from inside AioRemote mobile app
+
+
+Note: make sure that you have Java runtime. (On Mac, download Java from Apple)
+
+Note: on linux: make sure that you installed (libbluetooth-dev on Ubuntu) or (bluez-libs-devel on Fedora) or(bluez-devel on openSUSE)
+
+Note: on linux: give executable permission to AioServer3.5.0.jar
+
+Note: on Linux: copy config.ini file to Home directory
