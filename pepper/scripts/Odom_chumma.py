@@ -1,62 +1,17 @@
 #!/usr/bin/env python
 
-import serial
 import time
 import math
 
 import rospy
 import roslib
 import tf
-import tf2_ros
 
 import geometry_msgs.msg
 import std_msgs.msg
 
-from std_msgs.msg import Header
 from geometry_msgs.msg import Vector3
-from geometry_msgs.msg import Twist
-from geometry_msgs.msg import TransformStamped
-from geometry_msgs.msg import Quaternion
-from geometry_msgs.msg import Transform
 
-motor_left = serial.Serial('/dev/ttyUSB0',9600,timeout=0.5)
-motor_right = serial.Serial('/dev/ttyUSB1',9600,timeout=0.5)
-
-motor_left.flushOutput()
-motor_left.flushInput()
-
-motor_right.flushOutput()
-motor_right.flushInput()
-
-def Serial_write(motor_serial,command):
-    motor_serial.write(command+'\n\r')
-    time.sleep(0.05)
-    motor_serial.flushInput()
-    motor_serial.flushOutput()
-    
-def Serial_read(motor_serial):
-    motor_serial.write('P\n\r')
-    time.sleep(0.05)
-    count = motor_serial.readline()
-    motor_serial.flushInput()
-    motor_serial.flushOutput()
-    ticks = ''
-    for i in count:
-        if i.isdigit() or i == '-':
-            ticks=ticks+i
-    if ticks!='':
-        return int(ticks)
-    else:
-        return 0
-
-#globals
-
-left_ticks = 0
-right_ticks = 0
-
-left_ticks_prev = 0
-right_ticks_prev = 0
-diff = 0
 x = 0
 y = 0
 theta = 0
@@ -66,18 +21,11 @@ prev_r = 0
 
 if __name__== '__main__':
     
-    global left_ticks,right_ticks
-    global left_ticks_prev,right_ticks_prev
     global x,y,theta
     
-    Serial_write(motor_left,"P0")
-    Serial_write(motor_right,"P0")
-    
-    rospy.init_node('odometry_publish',anonymous=True)
-    pyserial_odom = rospy.Publisher("/odometry_raw",Vector3, queue_size=10)
+    rospy.init_node('odometry_publish1',anonymous=True)
+    pyserial_odom = rospy.Publisher("/odom_chumma",Vector3, queue_size=10)
     rate = rospy.Rate(5)
-
-    print "Printing the change in left and right ticks from the previous values"
     
     while not rospy.is_shutdown():
         try:
