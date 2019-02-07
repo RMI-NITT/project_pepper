@@ -18,7 +18,7 @@
     <visual>
       <origin rpy="1.5707963 0 3.14159265" xyz="0 -0.075 0"/>
       <geometry>
-        <mesh filename="package://urdf_tut/meshes/peppercad_binary.stl"  scale="0.001 0.001 0.001"/>
+        <mesh filename="package://pepper/meshes/peppercad_binary.stl"  scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="blue"/>
     </visual>
@@ -116,7 +116,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://urdf_tut/meshes/kinect.dae"  scale="0.001 0.001 0.001"/>
+        <mesh filename="package://pepper/meshes/kinect.dae"  scale="0.001 0.001 0.001"/>
       </geometry>
       <!-- <material name="blue"/> -->
     </visual>
