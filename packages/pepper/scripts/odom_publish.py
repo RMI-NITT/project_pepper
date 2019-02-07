@@ -9,7 +9,7 @@ import rospy
 import roslib
 
 
-def serial_write(motor_serial, command):
+def motor_serial_write(motor_serial, command):
     """Method to write the command to the motors
 
     :param motor_serial The serial port to write to
@@ -22,7 +22,7 @@ def serial_write(motor_serial, command):
     motor_serial.flushOutput()
 
 
-def serial_read(motor_serial):
+def motor_serial_read(motor_serial):
     """Method to read the data from the encoders
 
     :param motor_serial The serial port to read from
@@ -58,11 +58,11 @@ def main():
     motor_right.flushInput()
 
     # Initialize the motors to 0 encoder value
-    serial_write(motor_left, "P0")
-    serial_write(motor_right, "P0")
+    motor_serial_write(motor_left, "P0")
+    motor_serial_write(motor_right, "P0")
 
     rospy.init_node("odom_publisher", anonymous=True)
-    encoder_publisher = rospy.Publisher("odom", Encoders, queue_size=10)
+    # encoder_publisher = rospy.Publisher("odom", Encoders, queue_size=10)
     rate = rospy.Rate(50)
 
     prev_time = None
@@ -70,10 +70,10 @@ def main():
 
     while not rospy.is_shutdown():
         try:
-            left_ticks = serial_read(motor_left)
+            left_ticks = motor_serial_read(motor_left)
             left_ticks = left_ticks * -1
 
-            right_ticks = serial_read(motor_right)
+            right_ticks = motor_serial_read(motor_right)
 
             print left_ticks, right_ticks
 
