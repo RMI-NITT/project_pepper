@@ -1,8 +1,0 @@
-
-float64 measured_barometer
-float64 measured_ultrasonic
-float64 measured_GPS
-float64 sigma_barometer
-float64 sigma_ultrasonic
-float64 sigma_GPS
-float64 U_acc
