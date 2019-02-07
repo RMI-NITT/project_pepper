@@ -8,8 +8,11 @@ rosmsg show /sensor_msgs/Image
 rostopic pub /camera/depth_registered/image_raw
 java -jar AioRemoteDesktop3.5.0.jar 
 
+. ~/catkin_ws/devel/setup.bash
 
-
-
-
+/etc/ld.so.conf.d/opencv.conf must be added for the Anaconda env to access OpenCV
+Following lines inside the etc/ld.so.conf.d/opencv.conf
+/usr/local/lib (To avoid OpenCV errors)
+# This is the version for OpenCV
+/home/anicodebreaker/anaconda2/envs/pepper_env/lib
 
