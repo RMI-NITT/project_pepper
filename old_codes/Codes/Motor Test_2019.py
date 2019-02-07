@@ -2,7 +2,7 @@ import serial
 import time
 import datetime
 
-rhino_serial = serial.Serial('/dev/ttyUSB0',9600,timeout=0.5)  
+rhino_serial = serial.Serial('/dev/ttyUSB2',9600,timeout=0.5)  
 #rhino_serial1 = serial.Serial('/dev/ttyUSB1',9600,timeout=0.5)  
 rhino_serial.flushOutput()
 rhino_serial.flushInput()
@@ -59,7 +59,7 @@ time.sleep(5)
 print "Ready"
 while True:
     w = raw_input("r/w:")
-    k = raw_input("Port:")
+    #k = raw_input("Port:")
     input_data = raw_input("Enter:")
     if(w=='w'):
      #if(k=='1'):
