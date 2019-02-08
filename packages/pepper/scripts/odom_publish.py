@@ -5,6 +5,14 @@ import serial
 import math
 import time
 
+import rospy
+import roslib
+import tf
+
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Twist
+
 def motor_serial_write(motor_serial, command):
     """Method to write the command to the motors
 
@@ -25,7 +33,7 @@ def motor_serial_read(motor_serial):
     """
     # This does something!
     motor_serial.write('P\n\r')
-    time.sleep(0.1)
+    time.sleep(0.05)
     count = motor_serial.readline()
     motor_serial.flushInput()
     motor_serial.flushOutput()
@@ -45,8 +53,8 @@ def motor_serial_read(motor_serial):
 def main():
 
     # Subject to change
-    motor_left = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
-    motor_right = serial.Serial("/dev/ttyUSB1", 9600, timeout=0.5)
+    motor_left = serial.Serial("/dev/ttyUSB6", 9600, timeout=0.5)
+    motor_right = serial.Serial("/dev/ttyUSB7", 9600, timeout=0.5)
 
     motor_left.flushOutput()
     motor_right.flushOutput()
@@ -60,31 +68,118 @@ def main():
     motor_serial_write(motor_left, "P0")
     motor_serial_write(motor_right, "P0")
 
-    # M200 sets the max speed of the motor to 200
-    motor_serial_write(motor_left, "M200")
-    motor_serial_write(motor_right, "M200")
-
-    # R900 does a half rotation
     motor_serial_write(motor_left, "S100")
     motor_serial_write(motor_right, "S100")
 
-    print "Setup motor"
+    print "Motor Setup Done"
+
+    # Initialize variables for Odometry Calculation 
+    x = 0
+    y = 0
+    theta = 0
+    dx = 0
+    dy = 0
+    delta_theta = 0
+    rt_count = 0
+    lt_count = 0
+    old_lt_count = 0
+    old_rt_count = 0
+    prev_time = None
+    cur_time = 0
+
+    # Bot Parameters
+    
+    wheel_radius = 0.0525
+    # Ticks per revolution
+    tpr = 1800
+    meters_per_count = 2*math.pi*wheel_radius/tpr
+    # To be measured
+    base_width = 0.3 
+
+
+    odom_pub = rospy.Publisher('odom', Odometry, queue_size=10)
+    rospy.init_node('OdomPublisher', anonymous=True)
+    rate = rospy.Rate(50)
     
     while True:
-
         try:
-            lt = motor_serial_read(motor_left)
-            rt = motor_serial_read(motor_right) 
+            if prev_time is None:
+                dt = 10000
+                cur_time = rospy.get_time()
+                # Find better logic for initial dT
+            else:
 
-            print lt, rt
+                cur_time = rospy.get_time()
 
-        except KeyboardInterrupt:
-            motor_serial_write(motor_left, "S0")
-            motor_serial_write(motor_right, "S0")
-            print "Stopping both motors!!"
-            break
+                lt_count = motor_serial_read(motor_left)
+                rt_count = motor_serial_read(motor_right)
+                
+                dt = cur_time - prev_time
+
+                vel = meters_per_count * (lt_count - old_lt_count)/dt
+                ver = meters_per_count * (rt_count - old_rt_count)/dt
+
+                delta_s = meters_per_count*(((rt_count - old_rt_count) + (lt_count - old_lt_count))/2.0)
+                delta_theta = meters_per_count*(((rt_count - old_rt_count) - (lt_count - old_lt_count))/base_width)
+
+                dx = delta_s * math.cos(theta + delta_theta / 2.0)
+                dy = delta_s * math.sin(theta + delta_theta / 2.0)
+
+                x += dx                                                                                      
+                y += dy                                                                                      
+                theta += delta_theta
+
+                # Convert euler to quat
+                quaternion = tf.transformations.quaternion_from_euler(0, 0, theta)
+
+                # Populate ROS message
+                pose = Pose()
+
+                pose.position.x = x
+                pose.position.y = y
+                pose.position.z = 0
+
+                pose.orientation.x = quaternion[0]
+                pose.orientation.y = quaternion[1]
+                pose.orientation.z = quaternion[2]
+                pose.orientation.w = quaternion[3]
+
+                twist = Twist()
+                twist.linear.x = dx/dt
+                twist.linear.y = dy/dt
+                twist.linear.z = 0
+                twist.angular.x = 0.0;
+                twist.angular.y = 0.0;
+                twist.angular.z = delta_theta / dt
+
+                odom = Odometry()
+                odom.pose.position.x = pose.position.x
+                odom.pose.position.y = pose.position.y
+                odom.pose.position.z = pose.position.z
+                odom.pose.orientation.x = pose.orientation.x
+                odom.pose.orientation.y = pose.orientation.y
+                odom.pose.orientation.z = pose.orientation.z
+                odom.pose.orientation.w = pose.orientation.w
+                odom.twist = twist
+
+                odom_pub.publish(odom)
+
+                # Publish Odom Frame transform
+                br = tf.TransformBroadcaster()
+                br.sendTransform((x, y, 0),
+                     tf.transformations.quaternion_from_euler(0, 0, theta),
+                     rospy.Time.now(),
+                     "odom",
+                     "base_link")
+
+            prev_time = cur_time
+            old_lt_count = lt_count
+            old_rt_count = rt_count
+            rate.sleep()
 
 
+        except all:
+            pass
 
 if __name__ == "__main__":
     main()
