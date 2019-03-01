@@ -21,7 +21,7 @@ def motor_serial_write(motor_serial, command):
     """
     # P - Read write encoder position in Rhino Motor RMCS220x series
     motor_serial.write(command + "\n\r")
-    time.sleep(0.05)
+    # time.sleep(0.05)
     motor_serial.flushInput()
     motor_serial.flushOutput()
 
@@ -33,7 +33,7 @@ def motor_serial_read(motor_serial):
     """
     # This does something!
     motor_serial.write('P\n\r')
-    time.sleep(0.05)
+    # time.sleep(0.05)
     count = motor_serial.readline()
     motor_serial.flushInput()
     motor_serial.flushOutput()
@@ -53,8 +53,8 @@ def motor_serial_read(motor_serial):
 def main():
 
     # Subject to change
-    motor_left = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
-    motor_right = serial.Serial("/dev/ttyUSB1", 9600, timeout=0.5)
+    motor_left = serial.Serial("/dev/ttyUSB10", 9600, timeout=0.5)
+    motor_right = serial.Serial("/dev/ttyUSB11", 9600, timeout=0.5)
 
     motor_left.flushOutput()
     motor_right.flushOutput()
@@ -69,7 +69,7 @@ def main():
     motor_serial_write(motor_right, "P0")
 
     motor_serial_write(motor_left, "S100")
-    motor_serial_write(motor_right, "S100")
+    motor_serial_write(motor_right, "S-100")
 
     print "Motor Setup Done"
 
@@ -113,6 +113,8 @@ def main():
 
                 lt_count = motor_serial_read(motor_left)
                 rt_count = motor_serial_read(motor_right)
+
+                lt_count *= -1
                 
                 dt = cur_time - prev_time
 
@@ -155,8 +157,8 @@ def main():
                 odom = Odometry()
                 odom.header.stamp = rospy.Time.now()
                 odom.header.frame_id = "world"
-                odom.pose = pose
-                odom.twist = twist
+                odom.pose.pose = pose 
+                odom.twist.twist = twist
 
                 odom_pub.publish(odom)
 
@@ -173,9 +175,11 @@ def main():
             old_rt_count = rt_count
             rate.sleep()
 
-
-        except all:
-            pass
+        except KeyboardInterrupt:
+            print "shutting down motors"
+            motor_serial_write(motor_left, "S0")
+            motor_serial_write(motor_right, "S0")
+            break
 
 if __name__ == "__main__":
     main()
