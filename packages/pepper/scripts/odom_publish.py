@@ -53,8 +53,8 @@ def motor_serial_read(motor_serial):
 def main():
 
     # Subject to change
-    motor_left = serial.Serial("/dev/ttyUSB10", 9600, timeout=0.5)
-    motor_right = serial.Serial("/dev/ttyUSB11", 9600, timeout=0.5)
+    motor_left = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
+    motor_right = serial.Serial("/dev/ttyUSB1", 9600, timeout=0.5)
 
     motor_left.flushOutput()
     motor_right.flushOutput()
@@ -67,6 +67,9 @@ def main():
     # Initialize the motors to 0 encoder value
     motor_serial_write(motor_left, "P0")
     motor_serial_write(motor_right, "P0")
+
+    motor_serial_write(motor_left, "M200")
+    motor_serial_write(motor_right, "M200")
 
     motor_serial_write(motor_left, "S100")
     motor_serial_write(motor_right, "S-100")
@@ -114,7 +117,8 @@ def main():
                 lt_count = motor_serial_read(motor_left)
                 rt_count = motor_serial_read(motor_right)
 
-                lt_count *= -1
+                #lt_count *= -1
+                rt_count *= -1
                 
                 dt = cur_time - prev_time
 
