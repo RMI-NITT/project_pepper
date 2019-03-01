@@ -53,8 +53,8 @@ def motor_serial_read(motor_serial):
 def main():
 
     # Subject to change
-    motor_left = serial.Serial("/dev/ttyUSB6", 9600, timeout=0.5)
-    motor_right = serial.Serial("/dev/ttyUSB7", 9600, timeout=0.5)
+    motor_left = serial.Serial("/dev/ttyUSB0", 9600, timeout=0.5)
+    motor_right = serial.Serial("/dev/ttyUSB1", 9600, timeout=0.5)
 
     motor_left.flushOutput()
     motor_right.flushOutput()
@@ -153,13 +153,9 @@ def main():
                 twist.angular.z = delta_theta / dt
 
                 odom = Odometry()
-                odom.pose.position.x = pose.position.x
-                odom.pose.position.y = pose.position.y
-                odom.pose.position.z = pose.position.z
-                odom.pose.orientation.x = pose.orientation.x
-                odom.pose.orientation.y = pose.orientation.y
-                odom.pose.orientation.z = pose.orientation.z
-                odom.pose.orientation.w = pose.orientation.w
+                odom.header.stamp = rospy.Time.now()
+                odom.header.frame_id = "world"
+                odom.pose = pose
                 odom.twist = twist
 
                 odom_pub.publish(odom)

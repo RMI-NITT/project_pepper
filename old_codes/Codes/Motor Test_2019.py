@@ -2,7 +2,7 @@ import serial
 import time
 import datetime
 
-rhino_serial = serial.Serial('/dev/ttyUSB2',9600,timeout=0.5)  
+rhino_serial = serial.Serial('/dev/ttyUSB10',9600,timeout=0.5)  
 #rhino_serial1 = serial.Serial('/dev/ttyUSB1',9600,timeout=0.5)  
 rhino_serial.flushOutput()
 rhino_serial.flushInput()
