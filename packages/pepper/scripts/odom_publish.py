@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-## For RHINO Motors ##
+
 """Script to publish odometry data"""
 import serial
 import math

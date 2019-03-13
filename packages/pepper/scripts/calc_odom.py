@@ -32,7 +32,7 @@ wheel_radius = 0.0525
 tpr = 29520
 meters_per_count = 2*math.pi*wheel_radius/tpr
 # To be measured
-base_width = 0.3 
+base_width = 0.3 + 0.032 # Correction Factor for BaseWidth from testing
 
 # Define publisher handle
 odom_pub = rospy.Publisher('odom', Odometry, queue_size=10)
@@ -50,12 +50,12 @@ def callback(msg):
 
     if prev_time == None:
         prev_time = msg.header.stamp
-        old_lt_count = -1*msg.point.x
-        old_rt_count = -1*msg.point.y
+        old_lt_count = 1*msg.point.x
+        old_rt_count = 1*msg.point.y
     else :
         cur_time = msg.header.stamp
-        rt_count = -1*msg.point.y
-        lt_count = -1*msg.point.x
+        rt_count = 1*msg.point.y
+        lt_count = 1*msg.point.x
 
         dt = (cur_time - prev_time).to_sec()
 
@@ -69,11 +69,13 @@ def callback(msg):
         dy = delta_s * math.sin(theta + delta_theta / 2.0)
 
         x += dx                                                                                      
-        y += dy                                                                                      
+        y += dy                                                                                     
         theta += delta_theta
 
+        print theta*180/3.14
+
         # Convert euler to quat
-        quaternion = tf.transformations.quaternion_from_euler(0, 0, theta)
+        quaternion = tf.transformations.quaternion_from_euler(0, 0, -theta)
 
         # Populate ROS message
         pose = Pose()
@@ -105,7 +107,7 @@ def callback(msg):
 
         # Publish Odom Frame transform
         br = tf.TransformBroadcaster()
-        br.sendTransform((x, y, 0),
+        br.sendTransform((-x, -y, 0),
              tf.transformations.quaternion_from_euler(0, 0, theta),
              rospy.Time.now(),
              "odom",
