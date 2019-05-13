@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<robot name="pepper">
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <origin rpy="1.5707963 0 1.5707963" xyz="-0.075 0 0"/>
+      <geometry>
+        <mesh filename="package://pepper/meshes/peppercad_binary.stl"  scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+  
+  <link name="right_motor">
+    <visual>
+      <geometry>
+        <cylinder length="0.105" radius="0.0285"/>
+      </geometry>
+      <origin rpy="0 1.57075 -1.57075" xyz="0 0 0"/>
+    </visual>
+  </link>
+  <joint name="right_motor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_motor"/>
+    <origin rpy="0 0 0" xyz="0 -0.065 -0.03"/>
+  </joint>
+
+  <link name="left_motor">
+    <visual>
+      <geometry>
+        <cylinder length="0.105" radius="0.0285"/>
+      </geometry>
+      <origin rpy="0 -1.57075 1.57075" xyz="0 0 0"/>
+    </visual>
+  </link>
+  <joint name="left_motor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_motor"/>
+    <origin rpy="0 0 0" xyz="0 0.065 -0.03"/>
+  </joint>
+
+  <link name="left_motor_shaft">
+    <visual>
+      <geometry>
+        <cylinder length="0.03" radius="0.003"/>
+      </geometry>
+      <material name= "white"/>
+      <origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+    </visual>
+  </link>
+  <joint name="left_motor_shaft_joint" type="fixed">
+    <parent link="left_motor"/>
+    <child link="left_motor_shaft"/>
+    <origin rpy="0 0 0" xyz="0 0.055 0"/>
+  </joint>  
+
+  <link name="right_motor_shaft">
+    <visual>
+      <geometry>
+        <cylinder length="0.03" radius="0.003"/>
+      </geometry>
+      <material name= "white"/>
+      <origin rpy="0 1.57075 1.57075" xyz="0 0 0"/>
+    </visual>
+  </link>
+  <joint name="right_motor_shaft_joint" type="fixed">
+    <parent link="right_motor"/>
+    <child link="right_motor_shaft"/>
+    <origin rpy="0 0 0" xyz="0 -0.055 0"/>
+  </joint>
+
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.045" radius="0.0525"/>
+      </geometry>
+      <material name= "black"/>
+      <origin rpy="0 1.57075 1.57075" xyz="0.0325 0.0325 0"/>
+    </visual>
+  </link>
+  <joint name="left_wheel_link" type="continuous">
+    <parent link="left_motor_shaft"/>
+    <child link="left_wheel"/>
+    <origin rpy="0 0 0" xyz="-0.0325 0 0"/>
+  </joint>
+
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.045" radius="0.0525"/>
+      </geometry>
+      <material name= "black"/>
+      <origin rpy="0 1.57075 1.57075" xyz="-0.0325 -0.0325 0"/>
+    </visual>
+  </link>
+  <joint name="right_wheel_link" type="continuous">
+    <parent link="right_motor_shaft"/>
+    <child link="right_wheel"/>
+    <origin rpy="0 0 0" xyz="0.0325 0 0"/>
+  </joint>
+
+  <link name="camera_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://pepper/meshes/kinect.dae"  scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+    <joint name="kinect_link" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin rpy="0 0 0" xyz="0.16 0 0.355"/>
+  </joint> -->
+</robot>
